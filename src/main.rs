@@ -1,34 +1,24 @@
-use resource_manager::{gen_res_mgr, GetResource, Number, RegisterResource, Text};
+#![feature(provide_any)]
+#![feature(downcast_unchecked)]
 
-gen_res_mgr!(ResourceManager: {
-    number: Number,
-    text: Text,
-});
+use resource_manager::{AnyProvider, AnyProviderImpl, AnyProviderInner, ConstProvider};
 
 fn main() {
-    let mut res_mgr = ResourceManager::new();
+    let mut prov = AnyProviderImpl::new();
+    let mut test = Box::from(ConstProvider::new(69u8));
+    test.register_prefix("val".to_string(), Box::from(AnyProviderImpl::new()));
+    prov.register_prefix("Test".to_string(), test);
+    prov.register("val1", Box::new(5u32));
+    prov.register("val2", Box::new(5u16));
+    prov.register("test1", Box::new(5u16));
+    prov.register("testval4", Box::new(420u16));
 
-    res_mgr
-        .register(String::from("number1"), Number::new(3))
-        .unwrap();
-    res_mgr
-        .register(String::from("text1"), Text::new("Test text".to_string()))
-        .unwrap();
-    //res_mgr
-    //    .register(String::from("number1"), Text::new("Fail text".to_string()))
-    //    .unwrap();
-    //dbg!(&res_mgr);
+    let load: &u16 = prov.get("val2").unwrap();
+    println!("{load}");
 
-    let num: &Number = res_mgr.get_id("number1").unwrap();
-    println!("got: {}", num);
+    let load: &u16 = prov.get("testval4").unwrap();
+    println!("{load}");
 
-    let text: &Text = res_mgr.get_id("text1").unwrap();
-    println!("got: {}", text);
-
-    let fail_text: Result<&Text, _> = res_mgr.get_id("number1");
-    println!("got Error: {}", fail_text.unwrap_err());
-
-    let idx = res_mgr.find("text1").unwrap();
-    let txt: &Text = res_mgr.get(idx).unwrap();
-    println!("idx_txt: {txt}");
+    let load: &u8 = prov.get("Test1").unwrap();
+    println!("{load}");
 }
