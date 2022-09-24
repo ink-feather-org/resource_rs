@@ -21,10 +21,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "resource_lib"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+ "trait_cast_rs",
+]
+
+[[package]]
 name = "resource_manager"
 version = "0.1.0"
 dependencies = [
  "thiserror",
+ "trait_cast_rs",
 ]
 
 [[package]]
@@ -59,7 +68,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "trait_cast_impl_rs"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4b8e758a82a41eb250b574d4928370ccec6d7bca5b9dde86f91a15db2f83240b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "venial",
+]
+
+[[package]]
+name = "trait_cast_rs"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a02353bf54131878a1b06cf916b6bf4e68f35e68b8d85bffbdd84ff54c68ecb1"
+dependencies = [
+ "trait_cast_impl_rs",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4f5b37a154999a8f3f98cc23a628d850e154479cd94decf3414696e12e31aaf"
+
+[[package]]
+name = "venial"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3d723d4b0ebf523971bc63776095798272df2873910f16d53bb680aa2f4d609"
+dependencies = [
+ "proc-macro2",
+ "quote",
+]
