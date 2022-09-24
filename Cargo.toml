@@ -1,6 +1,2 @@
 [workspace]
-
-members = [
-    "resource_manager",
-    "resource_lib",
-]
+members = ["resource_manager", "resource_lib"]
