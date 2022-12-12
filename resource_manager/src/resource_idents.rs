@@ -1,11 +1,9 @@
-use crate::RpId;
 use std::fmt::{Debug, Display, Write};
 use thiserror::Error;
 
 #[derive(Debug, Clone, Copy)]
 pub struct ResourceIndex {
-  rp_index: u64,
-  rp_id: RpId,
+  res_index: u64,
 }
 
 #[derive(Error, Debug, PartialEq, Eq)]
@@ -53,7 +51,7 @@ impl<'a> ResourceStrPart<'a> {
   }
 }
 
-// .com.assets.org.big_apple
+// Example: .com.assets.org.big_apple
 pub struct ResourceString<'a> {
   parts: Vec<ResourceStrPart<'a>>,
 }
@@ -72,12 +70,13 @@ impl<'a> ResourceString<'a> {
   pub fn from_str(&'a mut self, str: &'a str) -> Result<ResourceStr<'a>, ResourceStrError> {
     self.parts.clear();
     for str in str.split(Self::SPLITS) {
-      self.push_str(ResourceStrPart::new(str).map_err(|err| {
+      let str_part = ResourceStrPart::new(str).map_err(|mut err| {
         if let ResourceStrError::InvalidChar { ref mut at, .. } = err {
           *at += self.len_chars() + 1;
         }
         err
-      })?);
+      })?;
+      self.push_str(str_part);
     }
     let depth = str.chars().rev().position(|c| c == '>').unwrap_or(0);
     Ok(ResourceStr {
@@ -86,7 +85,7 @@ impl<'a> ResourceString<'a> {
     })
   }
   pub fn push_str(
-    &mut self,
+    &'a mut self,
     str: ResourceStrPart<'a>,
   ) -> Result<ResourceStr<'a>, ResourceStrError> {
     self.parts.push(str);
@@ -119,7 +118,7 @@ impl<'a> TryFrom<&'a str> for ResourceString<'a> {
   type Error = ResourceStrError;
 
   fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-    let selv = Self::new();
+    let mut selv = Self::new();
     selv.from_str(value)?;
     Ok(selv)
   }
@@ -165,11 +164,6 @@ impl<'a> ResourceStr<'a> {
   }
   pub fn max_depth(self) -> usize {
     self.parts.len()
-  }
-}
-impl<'a> From<ResourceString<'a>> for ResourceStr<'a> {
-  fn from(str: ResourceString<'a>) -> Self {
-    str.build()
   }
 }
 impl<'a> Display for ResourceStr<'a> {

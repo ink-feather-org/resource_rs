@@ -10,7 +10,7 @@ impl ResourceHandle {
     todo!()
   }
 }
-impl RpResourceHandle for ResourceHandle {}
+//impl RpResourceHandle for ResourceHandle {}
 
 pub trait ResourceProvider {
   fn get_handle<'a>(&mut self, key: &TrimmedResourceString<'a>) -> Option<ResourceHandle>;
