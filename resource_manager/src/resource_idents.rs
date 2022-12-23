@@ -67,7 +67,7 @@ impl<'a> ResourceString<'a> {
     }
   }
 
-  pub fn from_str(&'a mut self, str: &'a str) -> Result<ResourceStr<'a>, ResourceStrError> {
+  pub fn from_str(&mut self, str: &'a str) -> Result<ResourceStr<'_>, ResourceStrError> {
     self.parts.clear();
     for str in str.split(Self::SPLITS) {
       let str_part = ResourceStrPart::new(str).map_err(|mut err| {
@@ -76,7 +76,7 @@ impl<'a> ResourceString<'a> {
         }
         err
       })?;
-      self.push_str(str_part);
+      self.push_str(str_part)?;
     }
     let depth = str.chars().rev().position(|c| c == '>').unwrap_or(0);
     Ok(ResourceStr {
@@ -85,9 +85,9 @@ impl<'a> ResourceString<'a> {
     })
   }
   pub fn push_str(
-    &'a mut self,
+    &mut self,
     str: ResourceStrPart<'a>,
-  ) -> Result<ResourceStr<'a>, ResourceStrError> {
+  ) -> Result<ResourceStr<'_>, ResourceStrError> {
     self.parts.push(str);
     Ok(self.build())
   }
